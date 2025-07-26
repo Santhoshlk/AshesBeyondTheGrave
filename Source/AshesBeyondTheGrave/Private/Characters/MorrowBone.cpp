@@ -1,0 +1,84 @@
+
+
+
+#include "Characters/MorrowBone.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+
+AMorrowBone::AMorrowBone()
+{
+ 	
+	PrimaryActorTick.bCanEverTick = true;
+	Capsule = GetCapsuleComponent();
+	Skeleton = GetMesh();
+	
+}
+
+
+void AMorrowBone::BeginPlay()
+{
+	Super::BeginPlay();
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (SubSystem)
+		{
+			SubSystem->AddMappingContext(MappingContext, 0);
+			
+		}
+	}
+	
+}
+
+void AMorrowBone::Moving(const FInputActionValue& value)
+{
+
+	if (Controller)
+	{
+		const FVector2D MovementVector = value.Get<FVector2D>();
+		const FRotator Rotation = Controller->GetControlRotation();
+
+		FRotator YawRotataion(0.f, Rotation.Yaw, 0.f);
+
+		const FVector ForwardVector = FRotationMatrix(YawRotataion).GetUnitAxis(EAxis::X);
+		AddMovementInput(ForwardVector, MovementVector.Y);
+		const FVector RightVector = FRotationMatrix(YawRotataion).GetUnitAxis(EAxis::Y);
+		AddMovementInput(RightVector, MovementVector.X);
+	}
+}
+
+void AMorrowBone::Looking(const FInputActionValue& value)
+{
+	if (GetController())
+	{
+		const FVector2D Rotation = value.Get<FVector2D>();
+		AddControllerYawInput(Rotation.X);
+		AddControllerPitchInput(Rotation.Y);
+	}
+}
+
+
+
+
+void AMorrowBone::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+
+void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	UEnhancedInputComponent* PlayerComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	if (PlayerComponent)
+	{
+		PlayerComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMorrowBone::Moving);
+			PlayerComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMorrowBone::Looking);
+	}
+
+}
+
