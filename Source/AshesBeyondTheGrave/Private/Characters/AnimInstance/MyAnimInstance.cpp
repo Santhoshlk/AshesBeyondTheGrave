@@ -21,5 +21,9 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	
-	GroundSpeed = UKismetMathLibrary::VSizeXY(MovementInput->Velocity);
+	if (MovementInput)
+	{
+		GroundSpeed = UKismetMathLibrary::VSizeXY(MovementInput->Velocity);
+	}
+	
 }
