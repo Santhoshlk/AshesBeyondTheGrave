@@ -36,6 +36,7 @@ void AMorrowBone::BeginPlay()
 void AMorrowBone::Moving(const FInputActionValue& value)
 {
 
+	
 	if (Controller)
 	{
 		const FVector2D MovementVector = value.Get<FVector2D>();
@@ -60,6 +61,23 @@ void AMorrowBone::Looking(const FInputActionValue& value)
 	}
 }
 
+void AMorrowBone::StartSprinting(const FInputActionValue& value)
+{
+	Movement = ECharacterMoving::ECM_Sprinting;
+}
+
+void AMorrowBone::RunSprinting(const FInputActionValue& value)
+{
+	Movement = ECharacterMoving::ECM_Sprinting;
+}
+
+void AMorrowBone::EndSprinting(const FInputActionValue& value)
+{
+	Movement = ECharacterMoving::ECM_Moving;
+}
+
+
+
 
 
 
@@ -78,6 +96,9 @@ void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		PlayerComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMorrowBone::Moving);
 			PlayerComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMorrowBone::Looking);
+			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Started,this,&AMorrowBone::StartSprinting);
+			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMorrowBone::EndSprinting);
+			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMorrowBone::RunSprinting);
 	}
 
 }
