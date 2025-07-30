@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Characters/CharacterState.h"
 #include "MyAnimInstance.generated.h"
 
 /**
@@ -29,4 +30,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Variables")
 	float GroundSpeed;
+	
+	UPROPERTY(BlueprintReadOnly,Category = "EnumState")
+	ECharacterMoving CharacterMovementState;
 };
