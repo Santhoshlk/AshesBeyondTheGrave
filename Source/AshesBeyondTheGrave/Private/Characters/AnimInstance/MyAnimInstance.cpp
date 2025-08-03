@@ -24,7 +24,7 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (MovementInput)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(MovementInput->Velocity);
-		
+		jumping = MovementInput->IsFalling();
 	}
 	if (Character)
 	{

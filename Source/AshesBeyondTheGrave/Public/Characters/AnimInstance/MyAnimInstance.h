@@ -33,4 +33,7 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly,Category = "EnumState")
 	ECharacterMoving CharacterMovementState;
+	UPROPERTY(BlueprintReadOnly,Category="jumping")
+	bool jumping;
+
 };
