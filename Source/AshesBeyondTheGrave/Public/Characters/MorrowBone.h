@@ -47,6 +47,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* SprintAction;
 
+	UPROPERTY(EditDefaultsOnly,Category="Input")
+	UInputAction* JumpAction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputMappingContext* MappingContext;
 

@@ -99,6 +99,7 @@ void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Started,this,&AMorrowBone::StartSprinting);
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMorrowBone::EndSprinting);
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMorrowBone::RunSprinting);
+			PlayerComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&ACharacter::Jump);
 	}
 
 }
