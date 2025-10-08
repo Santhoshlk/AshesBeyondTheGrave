@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "CharacterState.h"
+#include "Characters/AttackStateEnum.h"
 #include "MorrowBone.generated.h"
 
 
@@ -26,7 +27,16 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	//create a function to reset the state of character and then make logic for heavy and special attacks
 
+	UFUNCTION(BlueprintCallable)
+	void LightAttackEnd();
+	
+	UFUNCTION(BlueprintCallable)
+	void HeavyAttackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void SuperChargedAttackEnd();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 	
@@ -51,9 +61,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	UInputAction* JumpAction;
 
-	//create an input action for Light attacks
+	//create an input action for Light attacks,Heavy Attacks, SuperCharged Attack
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	TObjectPtr<UInputAction> LightAttackAction;
+
+	UPROPERTY(EditDefaultsOnly,Category="Input")
+	TObjectPtr<UInputAction> HeavyAttackAction;
+
+	UPROPERTY(EditDefaultsOnly,Category="Input")
+	TObjectPtr<UInputAction> SuperChargedAttackAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 
@@ -85,10 +101,16 @@ protected:
 	bool sprint = false;
 
 	void LightAttacks();
-	
-protected:
-
+	void HeavyAttacks();
+	void SuperChargedAttacks();
+private:
+     
 	ECharacterMoving Movement = ECharacterMoving::ECM_Moving;
+	EAttackState AttackState=EAttackState::EAS_NotAttacking;
+	EAttackState HeavyAttackState=EAttackState::EAS_NotAttacking;
+	int LightAttackCounter=0;
+	int HeavyAttackCounter=0;
+
 	
 public:
 	UFUNCTION()

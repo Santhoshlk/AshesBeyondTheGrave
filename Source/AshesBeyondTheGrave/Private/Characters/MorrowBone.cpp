@@ -88,14 +88,52 @@ void AMorrowBone::EndSprinting(const FInputActionValue& value)
 
 void AMorrowBone::LightAttacks()
 {
-	TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
-	if (IsValid(AnimInstance) && !LightAttackMontage.IsEmpty())
+	if (AttackState==EAttackState::EAS_NotAttacking)
 	{
-		int32 Montage_Number= FMath::RandRange(0,LightAttackMontage.Num()-1);
+		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
+		if (IsValid(AnimInstance) && !LightAttackMontage.IsEmpty())
+		{
+			int32 Montage_Number= FMath::RandRange(0,LightAttackMontage.Num()-1);
 
-		AnimInstance->Montage_Play(LightAttackMontage[Montage_Number]);
+			AnimInstance->Montage_Play(LightAttackMontage[Montage_Number]);
+		}
+		AttackState=EAttackState::EAS_LightAttack;
 	}
 	
+	
+}
+
+void AMorrowBone::HeavyAttacks()
+{
+	if (HeavyAttackState==EAttackState::EAS_HeavyAttack)
+	{
+		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
+		if (IsValid(AnimInstance) && !HeavyAttackMontage.IsEmpty())
+		{
+			int32 Montage_Number= FMath::RandRange(0,HeavyAttackMontage.Num()-1);
+
+			AnimInstance->Montage_Play(HeavyAttackMontage[Montage_Number]);
+		}
+		// No Attacks should work
+		HeavyAttackState=EAttackState::EAS_NotAttacking;
+		AttackState=EAttackState::EAS_LightAttack;
+	}
+}
+
+void AMorrowBone::SuperChargedAttacks()
+{
+	if (HeavyAttackState==EAttackState::EAS_SuperChargedAttack)
+	{
+		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
+		if (IsValid(AnimInstance) && !SuperChargedAttackMontage.IsEmpty())
+		{
+			int32 Montage_Number= FMath::RandRange(0,SuperChargedAttackMontage.Num()-1);
+
+			AnimInstance->Montage_Play(SuperChargedAttackMontage[Montage_Number]);
+		}
+		HeavyAttackState=EAttackState::EAS_NotAttacking;
+		AttackState=EAttackState::EAS_NotAttacking;
+	}
 }
 
 
@@ -103,6 +141,53 @@ void AMorrowBone::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMorrowBone::LightAttackEnd()
+{
+	AttackState=EAttackState::EAS_NotAttacking;
+     LightAttackCounter++;
+	if (LightAttackCounter==6)
+	{
+		LightAttackCounter=0;
+		//set so that u can perform heavy attack
+		HeavyAttackState=EAttackState::EAS_HeavyAttack;
+	}
+	else
+	{
+		HeavyAttackState=EAttackState::EAS_LightAttack;
+	}
+  
+}
+
+void AMorrowBone::HeavyAttackEnd()
+{
+	//now reset the light attack counter
+	LightAttackCounter=0;
+	//as the heavy attack has ended
+	HeavyAttackCounter++;
+	if (HeavyAttackCounter==2)
+	{
+		HeavyAttackCounter=0;
+		HeavyAttackState=EAttackState::EAS_SuperChargedAttack;
+		AttackState=EAttackState::EAS_SuperChargedAttack;
+	}
+	else
+	{
+		HeavyAttackState=EAttackState::EAS_LightAttack;
+		AttackState=EAttackState::EAS_NotAttacking;
+	}
+	
+}
+
+void AMorrowBone::SuperChargedAttackEnd()
+{
+	//a consequence of using supercharged attack
+	//now leave every thing in no Attacking state
+	LightAttackCounter=0;
+	HeavyAttackCounter=0;
+	HeavyAttackState=EAttackState::EAS_NotAttacking;
+	AttackState=EAttackState::EAS_NotAttacking;
 }
 
 
@@ -118,7 +203,9 @@ void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMorrowBone::EndSprinting);
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMorrowBone::RunSprinting);
 			PlayerComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&ACharacter::Jump);
-		    PlayerComponent->BindAction(LightAttackAction,ETriggerEvent::Triggered,this,&AMorrowBone::LightAttacks);
+		    PlayerComponent->BindAction(LightAttackAction,ETriggerEvent::Started,this,&AMorrowBone::LightAttacks);
+		    PlayerComponent->BindAction(HeavyAttackAction,ETriggerEvent::Started,this,&AMorrowBone::HeavyAttacks);
+		PlayerComponent->BindAction(SuperChargedAttackAction,ETriggerEvent::Started,this,&AMorrowBone::SuperChargedAttacks);
 	}
 
 }
