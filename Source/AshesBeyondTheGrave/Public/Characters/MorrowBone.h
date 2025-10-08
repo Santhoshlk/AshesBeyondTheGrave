@@ -14,6 +14,7 @@ class UCapsuleComponent;
 class UskeletalMeshComponent;
 class UInputMappingContext;
 class UInputAction;
+class UAnimMontage;
 UCLASS()
 class ASHESBEYONDTHEGRAVE_API AMorrowBone : public ACharacter
 {
@@ -31,10 +32,10 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-
+    UPROPERTY()
 	UCapsuleComponent* Capsule;
 	
-	
+	UPROPERTY()
 	USkeletalMeshComponent* Skeleton;
 
 	
@@ -51,8 +52,13 @@ protected:
 	UInputAction* JumpAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
+
 	UInputMappingContext* MappingContext;
 
+	UPROPERTY(EditDefaultsOnly,Category="Input")
+	TObjectPtr<UAnimMontage> StartAnimationMontage;
+
+	void StartMontage();
 	void Moving(const FInputActionValue& value);
 
 	void Looking(const FInputActionValue& value);

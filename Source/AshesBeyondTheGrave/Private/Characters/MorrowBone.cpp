@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Animation/AnimInstance.h"
 
 AMorrowBone::AMorrowBone()
 {
@@ -30,7 +31,16 @@ void AMorrowBone::BeginPlay()
 			
 		}
 	}
-	
+	StartMontage();
+}
+
+void AMorrowBone::StartMontage()
+{
+	TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
+	if (IsValid(AnimInstance) && IsValid(StartAnimationMontage))
+	{
+		AnimInstance->Montage_Play(StartAnimationMontage);
+	}
 }
 
 void AMorrowBone::Moving(const FInputActionValue& value)
