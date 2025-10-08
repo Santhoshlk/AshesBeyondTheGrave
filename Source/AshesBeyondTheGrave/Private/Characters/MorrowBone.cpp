@@ -86,9 +86,17 @@ void AMorrowBone::EndSprinting(const FInputActionValue& value)
 	Movement = ECharacterMoving::ECM_Moving;
 }
 
+void AMorrowBone::LightAttacks()
+{
+	TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
+	if (IsValid(AnimInstance) && !LightAttackMontage.IsEmpty())
+	{
+		int32 Montage_Number= FMath::RandRange(0,LightAttackMontage.Num()-1);
 
-
-
+		AnimInstance->Montage_Play(LightAttackMontage[Montage_Number]);
+	}
+	
+}
 
 
 void AMorrowBone::Tick(float DeltaTime)
@@ -110,6 +118,7 @@ void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMorrowBone::EndSprinting);
 			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMorrowBone::RunSprinting);
 			PlayerComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&ACharacter::Jump);
+		    PlayerComponent->BindAction(LightAttackAction,ETriggerEvent::Triggered,this,&AMorrowBone::LightAttacks);
 	}
 
 }

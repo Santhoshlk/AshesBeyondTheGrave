@@ -51,12 +51,26 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	UInputAction* JumpAction;
 
+	//create an input action for Light attacks
+	UPROPERTY(EditDefaultsOnly,Category="Input")
+	TObjectPtr<UInputAction> LightAttackAction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 
 	UInputMappingContext* MappingContext;
 
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	TObjectPtr<UAnimMontage> StartAnimationMontage;
+
+	// create the TArray so that u can have multiple Attack Montages
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TArray<TObjectPtr<UAnimMontage>> LightAttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TArray<TObjectPtr<UAnimMontage>> HeavyAttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TArray<TObjectPtr<UAnimMontage>> SuperChargedAttackMontage;
 
 	void StartMontage();
 	void Moving(const FInputActionValue& value);
@@ -69,6 +83,8 @@ protected:
 	void EndSprinting(const FInputActionValue& value);
 
 	bool sprint = false;
+
+	void LightAttacks();
 	
 protected:
 
