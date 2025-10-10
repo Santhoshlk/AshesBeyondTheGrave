@@ -12,10 +12,13 @@
 
 
 class UCapsuleComponent;
-class UskeletalMeshComponent;
+class USkeletalMeshComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAnimMontage;
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class ASHESBEYONDTHEGRAVE_API AMorrowBone : public ACharacter
 {
@@ -111,6 +114,12 @@ private:
 	int LightAttackCounter=0;
 	int HeavyAttackCounter=0;
 
+	//create the spring arm and the camera component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> SpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> Camera;
 	
 public:
 	UFUNCTION()

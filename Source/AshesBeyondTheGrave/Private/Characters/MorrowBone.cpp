@@ -2,11 +2,12 @@
 
 
 #include "Characters/MorrowBone.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimInstance.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 AMorrowBone::AMorrowBone()
 {
@@ -14,6 +15,17 @@ AMorrowBone::AMorrowBone()
 	PrimaryActorTick.bCanEverTick = true;
 	Capsule = GetCapsuleComponent();
 	Skeleton = GetMesh();
+
+	//create the objects of camera and spring arm
+
+	SpringArm=CreateDefaultSubobject<USpringArmComponent>( TEXT("SpringArm"));
+	SpringArm->SetupAttachment(GetRootComponent());
+	SpringArm->TargetArmLength= 300.f;
+	Camera=CreateDefaultSubobject<UCameraComponent>( TEXT("Camera"));
+
+	//camera is attached to the spring Arm
+	
+	Camera->SetupAttachment(SpringArm);
 	
 }
 
