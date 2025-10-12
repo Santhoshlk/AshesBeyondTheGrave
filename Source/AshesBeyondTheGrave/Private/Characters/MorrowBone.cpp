@@ -72,7 +72,7 @@ void AMorrowBone::Moving(const FInputActionValue& value)
 {
 
 	
-	if (IsValid(Controller) && StartingMontageEnded)
+	if (IsValid(Controller) &&  StartingMontageEnded)
 	{
 		const FVector2D MovementVector = value.Get<FVector2D>();
 		const FRotator Rotation = Controller->GetControlRotation();
