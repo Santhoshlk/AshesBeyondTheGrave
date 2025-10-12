@@ -8,6 +8,7 @@
 #include "Animation/AnimInstance.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMorrowBone::AMorrowBone()
 {
@@ -15,18 +16,29 @@ AMorrowBone::AMorrowBone()
 	PrimaryActorTick.bCanEverTick = true;
 	Capsule = GetCapsuleComponent();
 	Skeleton = GetMesh();
+	StartingMontageEnded = false;
 
+
+	//first stop the rotation of the character
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	
+	// set character orient to movement
+	GetCharacterMovement()->bOrientRotationToMovement= true;
+	GetCharacterMovement()->RotationRate=FRotator(0.f,450.f,0.f);
 	//create the objects of camera and spring arm
 
 	SpringArm=CreateDefaultSubobject<USpringArmComponent>( TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->TargetArmLength= 300.f;
-	Camera=CreateDefaultSubobject<UCameraComponent>( TEXT("Camera"));
+	SpringArm->bUsePawnControlRotation =true;
 
-	//camera is attached to the spring Arm
-	
-	Camera->SetupAttachment(SpringArm);
-	
+	//camera is attached to spring Arm
+	Camera= CreateDefaultSubobject<UCameraComponent>( TEXT("CameraComponent"));
+	Camera->SetupAttachment(SpringArm,USpringArmComponent::SocketName);
+	//we should not allow camera to use rotation
+	Camera->bUsePawnControlRotation = false;
 }
 
 
@@ -44,6 +56,7 @@ void AMorrowBone::BeginPlay()
 		}
 	}
 	StartMontage();
+	StartingMontageEnded= true;
 }
 
 void AMorrowBone::StartMontage()
@@ -59,7 +72,7 @@ void AMorrowBone::Moving(const FInputActionValue& value)
 {
 
 	
-	if (Controller)
+	if (IsValid(Controller) && StartingMontageEnded)
 	{
 		const FVector2D MovementVector = value.Get<FVector2D>();
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -75,7 +88,7 @@ void AMorrowBone::Moving(const FInputActionValue& value)
 
 void AMorrowBone::Looking(const FInputActionValue& value)
 {
-	if (GetController())
+	if (IsValid(Controller) && StartingMontageEnded)
 	{
 		const FVector2D Rotation = value.Get<FVector2D>();
 		AddControllerYawInput(Rotation.X);
@@ -100,7 +113,7 @@ void AMorrowBone::EndSprinting(const FInputActionValue& value)
 
 void AMorrowBone::LightAttacks()
 {
-	if (AttackState==EAttackState::EAS_NotAttacking)
+	if (AttackState==EAttackState::EAS_NotAttacking && StartingMontageEnded)
 	{
 		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
 		if (IsValid(AnimInstance) && !LightAttackMontage.IsEmpty())

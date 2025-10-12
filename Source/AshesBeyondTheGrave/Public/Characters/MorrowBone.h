@@ -120,6 +120,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
+
+	bool StartingMontageEnded = false;
 	
 public:
 	UFUNCTION()
