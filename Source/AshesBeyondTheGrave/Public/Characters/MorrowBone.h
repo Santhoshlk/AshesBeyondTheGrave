@@ -74,6 +74,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	TObjectPtr<UInputAction> SuperChargedAttackAction;
 
+	//create an input action for dynamic camera
+	UPROPERTY(EditDefaultsOnly,Category="Input")
+	TObjectPtr<UInputAction> FreeCameraAction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 
 	UInputMappingContext* MappingContext;
@@ -106,6 +110,10 @@ protected:
 	void LightAttacks();
 	void HeavyAttacks();
 	void SuperChargedAttacks();
+
+	void StaticCameraStopped();
+
+	void StaticCameraStarted();
 private:
      
 	ECharacterMoving Movement = ECharacterMoving::ECM_Moving;
@@ -125,7 +133,7 @@ private:
 	
 public:
 	UFUNCTION()
- FORCEINLINE	ECharacterMoving GetMovementState() {
+ FORCEINLINE	ECharacterMoving GetMovementState() const {
 		return Movement;
 	}
 };

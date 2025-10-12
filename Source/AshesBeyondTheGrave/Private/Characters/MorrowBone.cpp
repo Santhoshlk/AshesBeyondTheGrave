@@ -161,6 +161,27 @@ void AMorrowBone::SuperChargedAttacks()
 	}
 }
 
+void AMorrowBone::StaticCameraStopped()
+{
+	//
+	SpringArm->bUsePawnControlRotation = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	GetCharacterMovement()->bOrientRotationToMovement =true;
+	
+}
+
+void AMorrowBone::StaticCameraStarted()
+{
+	SpringArm->bUsePawnControlRotation = false;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = true;
+	GetCharacterMovement()->bOrientRotationToMovement =false;
+	
+}
+
 
 void AMorrowBone::Tick(float DeltaTime)
 {
@@ -231,6 +252,8 @@ void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		    PlayerComponent->BindAction(LightAttackAction,ETriggerEvent::Started,this,&AMorrowBone::LightAttacks);
 		    PlayerComponent->BindAction(HeavyAttackAction,ETriggerEvent::Started,this,&AMorrowBone::HeavyAttacks);
 		PlayerComponent->BindAction(SuperChargedAttackAction,ETriggerEvent::Started,this,&AMorrowBone::SuperChargedAttacks);
+		PlayerComponent->BindAction(FreeCameraAction,ETriggerEvent::Triggered,this,&AMorrowBone::StaticCameraStarted);
+		PlayerComponent->BindAction(FreeCameraAction,ETriggerEvent::Completed,this,&AMorrowBone::StaticCameraStopped);
 	}
 
 }
