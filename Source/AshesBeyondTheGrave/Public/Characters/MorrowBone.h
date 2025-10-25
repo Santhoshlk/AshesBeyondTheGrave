@@ -10,7 +10,7 @@
 #include "MorrowBone.generated.h"
 
 
-
+class UInputConfigDataAsset;
 class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UInputMappingContext;
@@ -50,38 +50,12 @@ protected:
 	
 	UPROPERTY()
 	USkeletalMeshComponent* Skeleton;
+#pragma region component
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Input")
+	UInputConfigDataAsset* InputConfigData;
+#pragma endregion
 
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UInputAction* MoveAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UInputAction* LookAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UInputAction* SprintAction;
-
-	UPROPERTY(EditDefaultsOnly,Category="Input")
-	UInputAction* JumpAction;
-
-	//create an input action for Light attacks,Heavy Attacks, SuperCharged Attack
-	UPROPERTY(EditDefaultsOnly,Category="Input")
-	TObjectPtr<UInputAction> LightAttackAction;
-
-	UPROPERTY(EditDefaultsOnly,Category="Input")
-	TObjectPtr<UInputAction> HeavyAttackAction;
-
-	UPROPERTY(EditDefaultsOnly,Category="Input")
-	TObjectPtr<UInputAction> SuperChargedAttackAction;
-
-	//create an input action for dynamic camera
-	UPROPERTY(EditDefaultsOnly,Category="Input")
-	TObjectPtr<UInputAction> FreeCameraAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-
-	UInputMappingContext* MappingContext;
-
+#pragma region Montages
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	TObjectPtr<UAnimMontage> StartAnimationMontage;
 
@@ -95,7 +69,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TArray<TObjectPtr<UAnimMontage>> SuperChargedAttackMontage;
 
-	 
+#pragma endregion
+	
+#pragma region Functions
 	void StartMontage();
 	void Moving(const FInputActionValue& value);
 
@@ -115,8 +91,10 @@ protected:
 	void StaticCameraStopped();
 
 	void StaticCameraStarted();
+#pragma endregion
+	
 private:
-     
+#pragma region Variables
 	ECharacterMoving Movement = ECharacterMoving::ECM_Moving;
 	EAttackState AttackState=EAttackState::EAS_NotAttacking;
 	EAttackState HeavyAttackState=EAttackState::EAS_NotAttacking;
@@ -131,7 +109,8 @@ private:
 	TObjectPtr<UCameraComponent> Camera;
 
 	bool StartingMontageEnded = false;
-	
+
+#pragma endregion 
 public:
 	UFUNCTION()
  FORCEINLINE	ECharacterMoving GetMovementState() const {

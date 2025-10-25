@@ -36,7 +36,6 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,meta=(AllowPrivateAccess=true))
 	TArray<FMorrowBoneInputConfig> NativeInputActions;
 
-
-	
+   
 	TObjectPtr<UInputAction> FindInputActionByGameplayTag(const FGameplayTag &InInputTag);
 };

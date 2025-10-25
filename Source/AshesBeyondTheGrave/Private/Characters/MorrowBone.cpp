@@ -8,7 +8,10 @@
 #include "Animation/AnimInstance.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Characters/InputConfigDataAsset.h"
+#include "Components/MorrowBoneInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/MorrowBoneGameplayTags.h"
 
 AMorrowBone::AMorrowBone()
 {
@@ -51,8 +54,7 @@ void AMorrowBone::BeginPlay()
 		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (SubSystem)
 		{
-			SubSystem->AddMappingContext(MappingContext, 0);
-			
+			SubSystem->AddMappingContext(InputConfigData->InputMappingContext, 0);
 		}
 	}
 	StartMontage();
@@ -77,11 +79,11 @@ void AMorrowBone::Moving(const FInputActionValue& value)
 		const FVector2D MovementVector = value.Get<FVector2D>();
 		const FRotator Rotation = Controller->GetControlRotation();
 
-		FRotator YawRotataion(0.f, Rotation.Yaw, 0.f);
+		FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
-		const FVector ForwardVector = FRotationMatrix(YawRotataion).GetUnitAxis(EAxis::X);
+		const FVector ForwardVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(ForwardVector, MovementVector.Y);
-		const FVector RightVector = FRotationMatrix(YawRotataion).GetUnitAxis(EAxis::Y);
+		const FVector RightVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(RightVector, MovementVector.X);
 	}
 }
@@ -240,20 +242,20 @@ void AMorrowBone::SuperChargedAttackEnd()
 void AMorrowBone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	UEnhancedInputComponent* PlayerComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	UMorrowBoneInputComponent* PlayerComponent = CastChecked<UMorrowBoneInputComponent>(PlayerInputComponent);
 	if (PlayerComponent)
 	{
-		PlayerComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMorrowBone::Moving);
-			PlayerComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMorrowBone::Looking);
-			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Started,this,&AMorrowBone::StartSprinting);
-			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMorrowBone::EndSprinting);
-			PlayerComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMorrowBone::RunSprinting);
-			PlayerComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&ACharacter::Jump);
-		    PlayerComponent->BindAction(LightAttackAction,ETriggerEvent::Started,this,&AMorrowBone::LightAttacks);
-		    PlayerComponent->BindAction(HeavyAttackAction,ETriggerEvent::Started,this,&AMorrowBone::HeavyAttacks);
-		PlayerComponent->BindAction(SuperChargedAttackAction,ETriggerEvent::Started,this,&AMorrowBone::SuperChargedAttacks);
-		PlayerComponent->BindAction(FreeCameraAction,ETriggerEvent::Triggered,this,&AMorrowBone::StaticCameraStarted);
-		PlayerComponent->BindAction(FreeCameraAction,ETriggerEvent::Completed,this,&AMorrowBone::StaticCameraStopped);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_Move,ETriggerEvent::Triggered,this, &AMorrowBone::Moving);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_Look,ETriggerEvent::Triggered,this,&AMorrowBone::Looking);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_Sprint,ETriggerEvent::Started,this,&AMorrowBone::StartSprinting);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_Sprint,ETriggerEvent::Completed,this,&AMorrowBone::EndSprinting);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_Sprint,ETriggerEvent::Triggered,this,&AMorrowBone::RunSprinting);
+			PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_Jump,ETriggerEvent::Triggered,this,&ACharacter::Jump);
+		    PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_LightAttack,ETriggerEvent::Started,this,&AMorrowBone::LightAttacks);
+		    PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_HeavyAttack,ETriggerEvent::Started,this,&AMorrowBone::HeavyAttacks);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_SuperChargedAttack,ETriggerEvent::Started,this,&AMorrowBone::SuperChargedAttacks);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_FreeCamera,ETriggerEvent::Triggered,this,&AMorrowBone::StaticCameraStarted);
+		PlayerComponent->BindingInputs(InputConfigData,MorrowBoneGameplayTags::Input_FreeCamera,ETriggerEvent::Completed,this,&AMorrowBone::StaticCameraStopped);
 	}
 
 }
