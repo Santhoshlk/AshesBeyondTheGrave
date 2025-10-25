@@ -95,6 +95,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TArray<TObjectPtr<UAnimMontage>> SuperChargedAttackMontage;
 
+	 
 	void StartMontage();
 	void Moving(const FInputActionValue& value);
 
