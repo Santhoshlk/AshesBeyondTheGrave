@@ -91,6 +91,9 @@ protected:
 	void StaticCameraStopped();
 
 	void StaticCameraStarted();
+
+	UFUNCTION(BlueprintCallable)
+	void StartingMontageEndedFunc();
 #pragma endregion
 	
 private:

@@ -58,7 +58,7 @@ void AMorrowBone::BeginPlay()
 		}
 	}
 	StartMontage();
-	StartingMontageEnded= true;
+	StartingMontageEnded = false;
 }
 
 void AMorrowBone::StartMontage()
@@ -182,6 +182,11 @@ void AMorrowBone::StaticCameraStarted()
 	bUseControllerRotationRoll = true;
 	GetCharacterMovement()->bOrientRotationToMovement =false;
 	
+}
+
+void AMorrowBone::StartingMontageEndedFunc()
+{
+	StartingMontageEnded=true;
 }
 
 
