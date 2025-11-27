@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Characters/MorrowBoneBase.h"
 #include "InputActionValue.h"
 #include "CharacterState.h"
 #include "Characters/AttackStateEnum.h"
@@ -20,7 +20,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class ASHESBEYONDTHEGRAVE_API AMorrowBone : public ACharacter
+class ASHESBEYONDTHEGRAVE_API AMorrowBone : public AMorrowBoneBase
 {
 	GENERATED_BODY()
 
