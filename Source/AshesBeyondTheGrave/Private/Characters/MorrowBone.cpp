@@ -42,21 +42,27 @@ AMorrowBone::AMorrowBone()
 	Camera->SetupAttachment(SpringArm,USpringArmComponent::SocketName);
 	//we should not allow camera to use rotation
 	Camera->bUsePawnControlRotation = false;
+
+	 LightAttackCounter=0;
+	 HeavyAttackCounter=0;
 }
 
 
 void AMorrowBone::BeginPlay()
 {
 	Super::BeginPlay();
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController)
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (SubSystem)
+		if (PlayerController)
 		{
-			SubSystem->AddMappingContext(InputConfigData->InputMappingContext, 0);
+			UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+			if (SubSystem)
+			{
+				SubSystem->AddMappingContext(InputConfigData->InputMappingContext, 0);
+			}
 		}
 	}
+	
 	StartMontage();
 	StartingMontageEnded = false;
 }
@@ -120,6 +126,13 @@ void AMorrowBone::LightAttacks()
 		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
 		if (IsValid(AnimInstance) && !LightAttackMontage.IsEmpty())
 		{
+			for (int32 i=0;i<=LightAttackMontage.Num()-1;i++)
+			{
+				if (LightAttackMontage[i]==NULL)
+				{
+					LightAttackMontage.RemoveAt(i);
+				}
+			}
 			int32 Montage_Number= FMath::RandRange(0,LightAttackMontage.Num()-1);
 
 			AnimInstance->Montage_Play(LightAttackMontage[Montage_Number]);
@@ -137,6 +150,14 @@ void AMorrowBone::HeavyAttacks()
 		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
 		if (IsValid(AnimInstance) && !HeavyAttackMontage.IsEmpty())
 		{
+		    //For safety Purposes u need to remove all the Null pointers in the Array AS we are Using RandRange
+			for (int32 i=0;i<=HeavyAttackMontage.Num()-1;i++)
+			{
+				 if (HeavyAttackMontage[i]==NULL)
+				 {
+					 HeavyAttackMontage.RemoveAt(i);
+				 }
+			}
 			int32 Montage_Number= FMath::RandRange(0,HeavyAttackMontage.Num()-1);
 
 			AnimInstance->Montage_Play(HeavyAttackMontage[Montage_Number]);
@@ -154,6 +175,13 @@ void AMorrowBone::SuperChargedAttacks()
 		TObjectPtr<UAnimInstance> AnimInstance=GetMesh()->GetAnimInstance();
 		if (IsValid(AnimInstance) && !SuperChargedAttackMontage.IsEmpty())
 		{
+			for (int32 i=0;i<=SuperChargedAttackMontage.Num()-1;i++)
+			{
+				if (SuperChargedAttackMontage[i]==NULL)
+				{
+					SuperChargedAttackMontage.RemoveAt(i);
+				}
+			}
 			int32 Montage_Number= FMath::RandRange(0,SuperChargedAttackMontage.Num()-1);
 
 			AnimInstance->Montage_Play(SuperChargedAttackMontage[Montage_Number]);

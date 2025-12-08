@@ -101,8 +101,8 @@ private:
 	ECharacterMoving Movement = ECharacterMoving::ECM_Moving;
 	EAttackState AttackState=EAttackState::EAS_NotAttacking;
 	EAttackState HeavyAttackState=EAttackState::EAS_NotAttacking;
-	int LightAttackCounter=0;
-	int HeavyAttackCounter=0;
+	int LightAttackCounter;
+	int HeavyAttackCounter;
 
 	//create the spring arm and the camera component
 	UPROPERTY(VisibleAnywhere)
