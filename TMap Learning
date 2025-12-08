@@ -1,0 +1,76 @@
+TMap is one of the most useful data types in Unreal Engine after TArray.
+
+//Decleration Type
+
+TMap<KeyValue,IdentifiyingElement Type> name
+
+ex:
+lets say u need to represnt a fruit Basket by integers and name of fruit
+
+
+TMap<int32,FString> FruitBasket;
+
+Now lets go into the operations:
+
+Note:
+The elements of TMap are stored in a Hash Table and are arranged  by the path that give them least Collsions
+ by Chaining + Sparse Array.
+So  the elements are accesible in O(1) time.
+
+
+//The Operations
+
+1)add
+
+FruitBasket.Add(5,TEXT("Banana"));
+FruitBasket.Add(6,TEXT("Apple"));
+
+//this is Allowed as Default Constructor will be called.
+FruitBasket.Add(7);
+
+
+FruitBasket.Add(4,TEXT("Pear"));
+FruitBasket.Add(4,TEXT("Grapes"));
+
+//Now in this senario the key value 4 Corresponds to Grapes as pear value will be overriden.
+
+
+2)Emplace
+
+// This id the better way to add any element u just need to remember that unlike in add u can only pass 
+ the element value ,ey value into default or one arg constructors.
+
+//rest is same as Add
+
+FruitBasket.Emplace(7,TEXT("Peaches"));
+
+
+3)Append
+
+// This is the Process of Combinig Two Maps of the The Same Type Obviously
+ //The ements will go into the map that has been called
+
+TMap<int32,FString> FruitBasket2;
+
+FruitBasket2.Emplace(3,TEXT("Papaya"));
+FruitBasket2.Emplace(9,TEXT("Bisleri"));
+
+
+FruitBasket.Append(FruitBasket2);
+
+Note : Now that elements of FruitBasket2 are in the FruitBsket if it exceeds the reserve size or size
+it Arranges THe Has Table Again by using Chaining etc to be in an Optimatal Arrangements with low collisions. 
+
+
+// Otherwise it just stores them in the empty space with least collisions .
+
+Note:
+ // If u want to edit it in BluePrint
+
+UPROPERTY(EditDefaultsOnly,BueprintReadWrite,Category="Maps")
+TMap<int32,FString> FruitBasket;
+
+// It should be Declared Like this
+
+
+4)Iterate:
